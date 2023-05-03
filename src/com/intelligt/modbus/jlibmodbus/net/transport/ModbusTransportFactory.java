@@ -31,7 +31,9 @@ public class ModbusTransportFactory {
     static public ModbusTransport createRTU(SerialPort serial) {
         return new ModbusTransportRTU(serial);
     }
-
+    static public ModbusTransport createRTUOverTCP(Socket socket) throws IOException {
+        return new ModbusTransportRTUOverTCP(socket);
+    }
     static public ModbusTransport createASCII(SerialPort serial) {
         return new ModbusTransportASCII(serial);
     }

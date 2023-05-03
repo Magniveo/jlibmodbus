@@ -1,10 +1,13 @@
 package com.intelligt.modbus.jlibmodbus.master;
 
+import com.intelligt.modbus.jlibmodbus.Modbus;
+import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
 import com.intelligt.modbus.jlibmodbus.net.ModbusConnectionFactory;
 import com.intelligt.modbus.jlibmodbus.serial.SerialParameters;
 import com.intelligt.modbus.jlibmodbus.serial.SerialPort;
 import com.intelligt.modbus.jlibmodbus.serial.SerialPortException;
 import com.intelligt.modbus.jlibmodbus.serial.SerialUtils;
+import com.intelligt.modbus.jlibmodbus.tcp.TcpParameters;
 
 /*
  * Copyright (C) 2016 "Invertor" Factory", JSC
@@ -29,12 +32,27 @@ import com.intelligt.modbus.jlibmodbus.serial.SerialUtils;
  */
 
 final public class ModbusMasterRTU extends ModbusMasterSerial {
-
+    final private boolean keepAlive;
     public ModbusMasterRTU(SerialParameters parameters) throws SerialPortException {
         super(ModbusConnectionFactory.getRTU(SerialUtils.createSerial(parameters)));
+        keepAlive =false;
     }
 
     public ModbusMasterRTU(String device, SerialPort.BaudRate baudRate, int dataBits, int stopBits, SerialPort.Parity parity) throws SerialPortException {
         this(new SerialParameters(device, baudRate, dataBits, stopBits, parity));
+    }
+    public boolean isKeepAlive() {
+        return keepAlive;
+    }
+    public ModbusMasterRTU(TcpParameters parameters) {
+        super(ModbusConnectionFactory.getRTUOverTCP(parameters));
+        keepAlive = parameters.isKeepAlive();
+        try {
+            if (isKeepAlive()) {
+                connect();
+            }
+        } catch (ModbusIOException e) {
+            Modbus.log().warning("keepAlive is set, connection failed at creation time.");
+        }
     }
 }

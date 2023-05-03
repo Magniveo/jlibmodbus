@@ -36,7 +36,9 @@ public class ModbusConnectionFactory {
     static public ModbusConnection getRTU(SerialPort serial) {
         return new ModbusConnectionRTU(serial);
     }
-
+    static public ModbusConnection getRTUOverTCP(TcpParameters tcpParameters) {
+        return new ModbusMasterConnectionRTUOverTCP(tcpParameters);
+    }
     static public ModbusConnection getTcpMaster(TcpParameters tcpParameters) {
         return new ModbusMasterConnectionTCP(tcpParameters);
     }
